@@ -49,8 +49,7 @@ void displaySign(Sign sign) {
   }
 }
 
-void codeString(volatile char * text) {
-  int length = strlen(text);
+void codeString(volatile char * text, uint8_t length) {
   for (int i = 0; i < length; ++i) {
     char c = toupper(text[i]);
     if (c == ' ') {
@@ -102,12 +101,11 @@ void USART1_IRQHandler(void){
 		char t = USART1->DR; // the character from the USART1 data register is saved in t
 
 		if( (t != '\r') && (cnt < MAX_STRLEN) ){
-			received_string[cnt] = t;
-			cnt++;
+			received_string[cnt++] = t;
 		}
 		else{ // otherwise reset the character counter and print the received string
+			codeString(received_string, cnt);
 			cnt = 0;
-			codeString(received_string);
 			//USART_puts(USART1, received_string);
 		}
 	}
